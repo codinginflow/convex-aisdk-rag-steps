@@ -11,13 +11,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAuthActions } from "@convex-dev/auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { AuthFormValues, signinSchema } from "../schema";
 
 export function SigninForm() {
   const [step, setStep] = useState<"signIn" | "signUp">("signIn");
+
+  const { signIn } = useAuthActions();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
 
   const form = useForm<AuthFormValues>({
     resolver: zodResolver(signinSchema),
@@ -28,7 +36,36 @@ export function SigninForm() {
   });
 
   async function onSubmit(values: AuthFormValues) {
-    // TODO: Sign in
+    setIsLoading(true);
+    try {
+      await signIn("password", {
+        ...values,
+        flow: step,
+      });
+      toast.success(
+        step === "signIn"
+          ? "Signed in successfully!"
+          : "Account created successfully!"
+      );
+      router.push("/notes");
+    } catch (error) {
+      console.error(error);
+      if (
+        // No nice way yet to handle expected errors yet, see: https://github.com/get-convex/convex-auth/issues/124
+        error instanceof Error &&
+        (error.message.includes("InvalidAccountId") ||
+          error.message.includes("InvalidSecret"))
+      ) {
+        form.setError("root", {
+          type: "manual",
+          message: "Invalid credentials.",
+        });
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -81,7 +118,7 @@ export function SigninForm() {
                 {form.formState.errors.root.message}
               </div>
             )}
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {step === "signIn" ? "Sign In" : "Sign Up"}
             </Button>
           </form>
