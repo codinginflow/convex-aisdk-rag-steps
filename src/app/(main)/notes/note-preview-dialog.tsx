@@ -61,7 +61,7 @@ export function NotePreviewDialog({ note }: NotePreviewDialogProps) {
             disabled={deletePending}
           >
             <Trash2 size={16} />
-            Delete Note
+            {deletePending ? "Deleting..." : "Delete Note"}
           </Button>
         </DialogFooter>
       </DialogContent>
