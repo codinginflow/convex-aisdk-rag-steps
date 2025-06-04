@@ -4,7 +4,6 @@ import { v } from "convex/values";
 
 const schema = defineSchema({
   ...authTables,
-
   notes: defineTable({
     title: v.string(),
     body: v.string(),

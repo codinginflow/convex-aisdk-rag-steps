@@ -1,0 +1,53 @@
+---
+description: This rule should be used whenever implementing UI interactions that require visual feedback, including form submissions, action confirmations, error handling, and success notifications.
+globs: 
+alwaysApply: false
+---
+# UI Feedback Toast Messages
+
+## Rule Description
+This rule provides guidelines for implementing consistent UI feedback using toast messages throughout the application. Always use Sonner toast for user interactions that need visual confirmation.
+
+## When to Use This Rule
+Use this rule whenever you need to provide feedback to users about:
+- Form submissions (success/error)
+- Action completions (success/error)
+- Notifications
+- Confirmations
+- Error messages
+
+## Implementation Guide
+
+### Basic Usage
+Import the toast from sonner:
+```javascript
+import { toast } from "sonner";
+```
+
+### Common Toast Patterns
+
+**Success Message:**
+```javascript
+toast.success("<action> completed successfully!");
+```
+
+**Error Message:**
+```javascript
+toast.error("Something went wrong. Please try again.");
+```
+
+**Custom Duration:**
+```javascript
+toast("This will disappear in 5 seconds", {
+  duration: 5000,
+});
+```
+
+### Best Practices
+1. Keep messages short and clear
+2. Use appropriate toast types (success, error, info)
+3. For form submissions, always show feedback to confirm the action
+4. Include action buttons when appropriate for undoing actions
+
+## Already Implemented
+The Toaster component is already set up in our root layout file.
