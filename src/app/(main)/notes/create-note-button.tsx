@@ -1,10 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "convex/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
+import { api } from "@/../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -55,6 +58,8 @@ interface CreateNoteDialogProps {
 }
 
 function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
+  const createNote = useMutation(api.notes.createNote);
+
   const form = useForm<z.infer<typeof noteFormSchema>>({
     resolver: zodResolver(noteFormSchema),
     defaultValues: {
@@ -63,8 +68,22 @@ function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
     },
   });
 
+  const isSubmitting = form.formState.isSubmitting;
+
   async function onSubmit(values: z.infer<typeof noteFormSchema>) {
-    // TODO: Create note from form input
+    try {
+      await createNote({
+        title: values.title,
+        body: values.body,
+      });
+
+      toast.success("Note created successfully!");
+      form.reset();
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error creating note:", error);
+      toast.error("Failed to create note. Please try again.");
+    }
   }
 
   return (
@@ -106,7 +125,9 @@ function CreateNoteDialog({ open, onOpenChange }: CreateNoteDialogProps) {
               )}
             />
             <DialogFooter>
-              <Button type="submit">Save</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>
