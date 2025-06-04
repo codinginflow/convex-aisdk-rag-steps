@@ -9,10 +9,23 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Trash2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Doc } from "../../../../convex/_generated/dataModel";
 
-export function NotePreviewDialog() {
+interface NotePreviewDialogProps {
+  note: Doc<"notes">;
+}
+
+export function NotePreviewDialog({ note }: NotePreviewDialogProps) {
+  const searchParams = useSearchParams();
+  const isOpen = searchParams.get("noteId") === note._id;
+
+  function onClose() {
+    window.history.pushState(null, "", window.location.pathname);
+  }
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
           <DialogTitle>Note Title</DialogTitle>
