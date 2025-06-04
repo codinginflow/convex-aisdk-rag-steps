@@ -20,17 +20,17 @@ export function NotePreviewDialog({ note }: NotePreviewDialogProps) {
   const searchParams = useSearchParams();
   const isOpen = searchParams.get("noteId") === note._id;
 
-  function onClose() {
+  function handleClose() {
     window.history.pushState(null, "", window.location.pathname);
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
-          <DialogTitle>Note Title</DialogTitle>
+          <DialogTitle>{note.title}</DialogTitle>
         </DialogHeader>
-        <div className="mt-4 whitespace-pre-wrap">Note Body</div>
+        <div className="mt-4 whitespace-pre-wrap">{note.body}</div>
         <DialogFooter className="mt-6">
           <Button variant="destructive" className="gap-2">
             <Trash2 size={16} />
