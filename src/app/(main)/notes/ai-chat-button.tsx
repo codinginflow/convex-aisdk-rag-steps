@@ -70,6 +70,7 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
           messages: initialMessages,
         },
       },
+      maxSteps: 3,
     }),
     chatId: "default",
   });
@@ -182,6 +183,8 @@ interface ChatMessageProps {
 }
 
 function ChatMessage({ message }: ChatMessageProps) {
+  const currentStep = message.parts[message.parts.length - 1];
+
   return (
     <div
       className={cn(
@@ -203,12 +206,13 @@ function ChatMessage({ message }: ChatMessageProps) {
             AI Assistant
           </div>
         )}
-        {message.parts.map((part, index) => {
-          if (part.type === "text") {
-            return <Markdown key={index}>{part.text}</Markdown>;
-          }
-          return null;
-        })}
+        {currentStep?.type === "text" && (
+          <Markdown>{currentStep.text}</Markdown>
+        )}
+        {/* If we had more than one tool, we could check the toolName too */}
+        {currentStep?.type === "tool-invocation" && (
+          <div className="animate-pulse italic">Searching notes...</div>
+        )}
       </div>
     </div>
   );
