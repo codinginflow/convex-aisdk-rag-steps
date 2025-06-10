@@ -25,7 +25,7 @@ export async function generateEmbeddings(value: string): Promise<
 
   return embeddings.map((embedding, index) => ({
     content: chunks[index],
-    embedding: embedding,
+    embedding,
   }));
 }
 
