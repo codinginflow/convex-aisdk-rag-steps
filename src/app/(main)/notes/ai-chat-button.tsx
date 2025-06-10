@@ -182,6 +182,8 @@ interface ChatMessageProps {
 }
 
 function ChatMessage({ message }: ChatMessageProps) {
+  const currentStep = message.parts[message.parts.length - 1];
+
   return (
     <div
       className={cn(
@@ -203,12 +205,9 @@ function ChatMessage({ message }: ChatMessageProps) {
             AI Assistant
           </div>
         )}
-        {message.parts.map((part, index) => {
-          if (part.type === "text") {
-            return <Markdown key={index}>{part.text}</Markdown>;
-          }
-          return null;
-        })}
+        {currentStep?.type === "text" && (
+          <Markdown>{currentStep.text}</Markdown>
+        )}
       </div>
     </div>
   );
