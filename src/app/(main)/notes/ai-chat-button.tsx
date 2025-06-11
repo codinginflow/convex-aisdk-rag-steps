@@ -82,7 +82,7 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
     }
   }
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       onSubmit(e);
     }
