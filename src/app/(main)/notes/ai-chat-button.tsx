@@ -49,16 +49,16 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
       },
     }),
   });
+  
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (input.trim()) {
       sendMessage({ text: input });
       setInput("");
     }
   }
-
-  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   if (!open) return null;
 
@@ -113,7 +113,7 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
         <div ref={messagesEndRef} />
       </div>
 
-      <form className="flex gap-2 border-t p-3" onSubmit={handleSubmit}>
+      <form className="flex gap-2 border-t p-3" onSubmit={onSubmit}>
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
