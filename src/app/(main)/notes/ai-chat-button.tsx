@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useChat } from "@ai-sdk/react";
 import { useAuthToken } from "@convex-dev/auth/react";
-import { defaultChatStoreOptions, UIMessage } from "ai";
+import { DefaultChatTransport, UIMessage } from "ai";
 import { Bot, Expand, Minimize, Send, Trash, X } from "lucide-react";
 import { useRef, useState } from "react";
 
@@ -35,18 +35,28 @@ const convexSiteUrl = process.env.NEXT_PUBLIC_CONVEX_URL!.replace(
 );
 
 function AIChatBox({ open, onClose }: AIChatBoxProps) {
+  const [input, setInput] = useState("");
+
   const [isExpanded, setIsExpanded] = useState(false);
 
   const token = useAuthToken();
 
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
-    chatStore: defaultChatStoreOptions({
+  const { messages, sendMessage } = useChat({
+    transport: new DefaultChatTransport({
       api: `${convexSiteUrl}/api/chat`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }),
   });
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (input.trim()) {
+      sendMessage({ text: input });
+      setInput("");
+    }
+  }
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -106,7 +116,7 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
       <form className="flex gap-2 border-t p-3" onSubmit={handleSubmit}>
         <Textarea
           value={input}
-          onChange={handleInputChange}
+          onChange={(e) => setInput(e.target.value)}
           placeholder="Type your message..."
           className="max-h-[120px] min-h-[40px] resize-none overflow-y-auto"
           maxLength={1000}
