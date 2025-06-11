@@ -75,12 +75,6 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
     }
   }, [open, messages]);
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      onSubmit(e);
-    }
-  };
-
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (input.trim() && !isProcessing) {
@@ -88,6 +82,12 @@ function AIChatBox({ open, onClose }: AIChatBoxProps) {
       setInput("");
     }
   }
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      onSubmit(e);
+    }
+  };
 
   if (!open) return null;
 
